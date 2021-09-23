@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import peggy from 'peggy'
-import { useMessage, NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NGrid, NGi, NPageHeader, NButton, NIcon, NSpace, NInput, NInputGroup, NTimeline, NTimelineItem, NButtonGroup, NStatistic, NTime } from 'naive-ui'
+import { useMessage, NText, NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NGrid, NGi, NPageHeader, NButton, NIcon, NSpace, NInput, NInputGroup, NTimeline, NTimelineItem, NButtonGroup, NStatistic, NTime } from 'naive-ui'
 import { MathFunction, ChevronRight, Check, BorderOuter, BorderInner } from '@vicons/tabler'
 import { Icon } from '@vicons/utils'
 
 import Status from "./Status.vue"
+import Home from "./Home.vue"
 import { Single, Abstraction, Application, Term, fromJson } from "../models/grammar"
 import { reduct, freeVariables, ReductType, isNormalForm, isCanonicalForm } from "../core/calculus"
 
@@ -26,7 +27,7 @@ class Step {
 
 const message = useMessage();
 
-const userInput = ref("(λu. λv. v)((λx. (x x))(λx. (x x)))");
+const userInput = ref("((λe. λf. e) (((λa. λb. a) x) y)) (((λc. λd. c) u) v)");
 const steps = ref<Step[]>([]);
 const current = ref<Term | null>(null);
 const currentFV = ref<string>("");
@@ -114,7 +115,7 @@ export default {
       <n-grid :cols="24">
         <n-gi :offset="3" :span="18">
           <n-space vertical size="large">
-            <n-page-header subtitle="λ 演算">
+            <n-page-header subtitle="λ 演算与 β 约简">
               <template #extra>
                 <suspense>
                   <Status />
@@ -128,7 +129,8 @@ export default {
                 </n-icon>
               </template>
               <template #title>
-                <a href="#" style="text-decoration: none; color: inherit;">Lambda Calculus</a>
+                <n-text type="info">Lambda</n-text>&nbsp;Calculus and
+                <n-text type="success">Beta</n-text>&nbsp;Reduction
               </template>
             </n-page-header>
             <n-input-group size="large">
@@ -149,8 +151,8 @@ export default {
                 </n-icon>
               </n-button>
             </n-input-group>
-            <n-space size="large">
-              <n-space size="large" vertical v-if="current">
+            <n-space size="large" v-if="current">
+              <n-space size="large" vertical>
                 <n-statistic label="Current" :value="current.toText()"></n-statistic>
                 <n-statistic label="Free Variables" :value="currentFV"></n-statistic>
                 <n-button-group vertical style="width: 100%" size="large">
@@ -182,6 +184,11 @@ export default {
                 ></n-timeline-item>
               </n-timeline>
             </n-space>
+          </n-space>
+          <n-space size="large" v-if="!current" style="margin-top: 20px">
+            <suspense>
+              <Home />
+            </suspense>
           </n-space>
         </n-gi>
       </n-grid>
