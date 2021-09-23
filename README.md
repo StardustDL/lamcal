@@ -2,4 +2,4 @@
 
 ![](https://github.com/StardustDL/lamcal/workflows/CI/badge.svg) ![](https://img.shields.io/github/license/StardustDL/lamcal.svg)
 
-A calculator for lambda calculus.
+An online calculator for lambda calculus (λx. y).
