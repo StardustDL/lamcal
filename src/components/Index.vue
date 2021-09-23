@@ -2,31 +2,48 @@
 import { ref } from 'vue'
 import peggy from 'peggy'
 import { useMessage, NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NGrid, NGi, NPageHeader, NButton, NIcon, NSpace, NInput, NInputGroup, NTimeline, NTimelineItem, NButtonGroup, NStatistic, NTime } from 'naive-ui'
-import { MathFunction, ChevronRight, Check, BrandGithub, At, License, GitCommit, Clock } from '@vicons/tabler'
+import { MathFunction, ChevronRight, Check, BorderOuter, BorderInner } from '@vicons/tabler'
 import { Icon } from '@vicons/utils'
 
+import Status from "./Status.vue"
 import { Single, Abstraction, Application, Term, fromJson } from "../models/grammar"
-import { reduct, freeVariables } from "../core/calculus"
+import { reduct, freeVariables, ReductType, isNormalForm, isCanonicalForm } from "../core/calculus"
 
 class Step {
   value: Term;
   text: string;
-  subject: string;
-  constructor(value: Term, subject?: Term) {
+  redex: string;
+  normal: boolean;
+  canonical: boolean;
+  constructor(value: Term, redex?: Term) {
     this.value = value;
+    this.normal = isNormalForm(this.value);
+    this.canonical = isCanonicalForm(this.value);
     this.text = this.value.toText();
-    this.subject = subject?.toText() ?? "";
+    this.redex = redex?.toText() ?? "";
   }
 }
 
 const message = useMessage();
 
-const userInput = ref("λx. y");
+const userInput = ref("(λu. λv. v)((λx. (x x))(λx. (x x)))");
 const steps = ref<Step[]>([]);
 const current = ref<Term | null>(null);
 const currentFV = ref<string>("");
 
-const buildStatus = await (await fetch("build.json")).json();
+
+function timelineType(step: Step, index: number) {
+  if (step.normal)
+    return "success";
+  if (step.canonical)
+    return "error";
+  if (index == 0)
+    return "info";
+  if (index == steps.value.length - 1)
+    return "warning";
+  return "default";
+}
+
 const grammar = await (await fetch("grammar.peggy")).text();
 const parser = peggy.generate(grammar);
 
@@ -53,10 +70,21 @@ function onUserSubmit() {
   }
 }
 
-function onReduct() {
-  const result = reduct(current.value!);
-  if (result.subject) {
-    steps.value.push(new Step(result.result, result.subject));
+function onReductInNormalOrder() {
+  const result = reduct(current.value!, ReductType.NormalOrder);
+  if (result.redex) {
+    steps.value.push(new Step(result.result, result.redex));
+    setCurrent(result.result);
+  }
+  else {
+    message.info("Reducted to the final.");
+  }
+}
+
+function onReductInApplicativeOrder() {
+  const result = reduct(current.value!, ReductType.ApplicativeOrder);
+  if (result.redex) {
+    steps.value.push(new Step(result.result, result.redex));
     setCurrent(result.result);
   }
   else {
@@ -73,11 +101,8 @@ export default {
     MathFunction,
     ChevronRight,
     Check,
-    BrandGithub,
-    At,
-    License,
-    GitCommit,
-    Clock,
+    BorderInner,
+    BorderOuter,
   }
 }
 </script>
@@ -91,58 +116,9 @@ export default {
           <n-space vertical size="large">
             <n-page-header subtitle="λ 演算">
               <template #extra>
-                <n-space>
-                  <n-button text>
-                    <template #icon>
-                    <n-icon>
-                      <icon>
-                        <at />
-                      </icon>
-                    </n-icon>
-                    </template>
-                    <a href="https://www.stardustdl.top/" style="text-decoration: none; color: inherit;">StardustDL</a>
-                  </n-button>
-                  <n-button text>
-                    <template #icon>
-                    <n-icon>
-                      <icon>
-                        <license />
-                      </icon>
-                    </n-icon>
-                    </template>
-                    <a href="https://github.com/StardustDL/lamcal/blob/master/LICENSE" style="text-decoration: none; color: inherit;">MPL-2.0</a>
-                  </n-button>
-                  <n-button text>
-                    <template #icon>
-                    <n-icon>
-                      <icon>
-                        <brand-github />
-                      </icon>
-                    </n-icon>
-                    </template>
-                    <a href="https://github.com/StardustDL/lamcal" style="text-decoration: none; color: inherit;">GitHub</a>
-                  </n-button>
-                  <n-button text>
-                    <template #icon>
-                    <n-icon>
-                      <icon>
-                        <git-commit />
-                      </icon>
-                    </n-icon>
-                    </template>
-                    <a :href="`https://github.com/StardustDL/lamcal/commit/${buildStatus.commit}`" style="text-decoration: none; color: inherit;">{{ buildStatus.shortCommit }}</a>
-                  </n-button>
-                  <n-button text>
-                    <template #icon>
-                    <n-icon>
-                      <icon>
-                        <clock />
-                      </icon>
-                    </n-icon>
-                    </template>
-                    <n-time :time="new Date(buildStatus.date)" type="relative"></n-time>
-                  </n-button>
-                </n-space>
+                <suspense>
+                  <Status />
+                </suspense>
               </template>
               <template #avatar>
                 <n-icon>
@@ -177,16 +153,32 @@ export default {
               <n-space size="large" vertical v-if="current">
                 <n-statistic label="Current" :value="current.toText()"></n-statistic>
                 <n-statistic label="Free Variables" :value="currentFV"></n-statistic>
-                <n-button-group vertical style="width: 100%">
-                  <n-button @click="onReduct">Reduct</n-button>
+                <n-button-group vertical style="width: 100%" size="large">
+                  <n-button @click="onReductInNormalOrder">
+                    <template #icon>
+                      <n-icon>
+                        <border-outer />
+                      </n-icon>
+                    </template>
+                    Reduct in Normal-order
+                  </n-button>
+                  <n-button @click="onReductInApplicativeOrder">
+                    <template #icon>
+                      <n-icon>
+                        <border-inner />
+                      </n-icon>
+                    </template>
+                    Reduct in Applicative-order
+                  </n-button>
                 </n-button-group>
               </n-space>
               <n-timeline v-if="steps.length > 0">
                 <n-timeline-item
-                  v-for="item in steps"
+                  v-for="(item, index) in steps"
                   :key="item.text"
                   :title="item.text"
-                  :time="item.subject"
+                  :time="item.redex"
+                  :type="timelineType(item, index)"
                 ></n-timeline-item>
               </n-timeline>
             </n-space>

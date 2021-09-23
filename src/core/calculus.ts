@@ -1,45 +1,76 @@
 import { Abstraction, Application, Single, Term } from "../models/grammar"
 
+export enum ReductType {
+    NormalOrder,
+    ApplicativeOrder
+}
+
 export class ReductResult {
-    subject?: Term;
+    redex?: Term;
     result: Term;
 
-    constructor(result: Term, subject?: Term) {
+    constructor(result: Term, redex?: Term) {
         this.result = result;
-        this.subject = subject;
+        this.redex = redex;
     }
 
     done(): boolean {
-        return this.subject != undefined;
+        return this.redex != undefined;
     }
 }
 
-export function reduct(term: Term): ReductResult {
+export function reduct(term: Term, type: ReductType): ReductResult {
     if (term instanceof Single) {
     }
     else if (term instanceof Application) {
-        if(isRedex(term)){
+        if (type == ReductType.NormalOrder && isRedex(term)) {
             let func = <Abstraction>term.left;
             let subed = substitute(func.body, func.arg, term.right);
             return new ReductResult(subed, term);
         }
 
-        let left = reduct(term.left);
+        let left = reduct(term.left, type);
         if (left.done()) {
-            return new ReductResult(new Application(left.result, term.right), left.subject);
+            return new ReductResult(new Application(left.result, term.right), left.redex);
         }
-        let right = reduct(term.right);
+        let right = reduct(term.right, type);
         if (right.done()) {
-            return new ReductResult(new Application(term.left, right.result), right.subject);
+            return new ReductResult(new Application(term.left, right.result), right.redex);
+        }
+
+        if (type == ReductType.ApplicativeOrder && isRedex(term)) {
+            let func = <Abstraction>term.left;
+            let subed = substitute(func.body, func.arg, term.right);
+            return new ReductResult(subed, term);
         }
     }
     else if (term instanceof Abstraction) {
-        let body = reduct(term.body);
+        let body = reduct(term.body, type);
         if (body.done()) {
-            return new ReductResult(new Abstraction(term.arg, body.result), body.subject);
+            return new ReductResult(new Abstraction(term.arg, body.result), body.redex);
         }
     }
     return new ReductResult(term);
+}
+
+export function isCanonicalForm(term: Term): boolean {
+    return term instanceof Abstraction && [...freeVariables(term)].length == 0;
+}
+
+export function isNormalForm(term: Term): boolean {
+    if (term instanceof Single) {
+        return true;
+    }
+    else if (term instanceof Application) {
+        if (isRedex(term)) {
+            return false;
+        }
+        return isNormalForm(term.left) && isNormalForm(term.right);
+    }
+    else if (term instanceof Abstraction) {
+        return isNormalForm(term.body);
+    }
+    return false;
 }
 
 export function variables(term: Term): Set<string> {

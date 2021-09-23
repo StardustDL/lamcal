@@ -14,4 +14,11 @@ Visit [here](http://www.stardustdl.top/lamcal/).
 
 (λx. (x x)) ((λy. y) (λz. z))
 -> λz. z
+
+((λe. λf. e) (((λa. λb. a) x) y)) (((λc. λd. c) u) v)
+-> x
+
+(λx. (x (λy. ((x y) y))))(λz. λw. z)
+-> λw.λy.((λz.λw.z y) y)
+-> λw.λy.y
 ```
