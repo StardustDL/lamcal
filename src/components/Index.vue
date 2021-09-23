@@ -42,7 +42,7 @@ function parse(text: string): Term {
 
 function onUserSubmit() {
   try {
-    const result = parse(userInput.value);
+    const result = parse(`(${userInput.value})`);
     steps.value.length = 0;
     steps.value.push(new Step(result));
     setCurrent(result);
@@ -60,7 +60,7 @@ function onReduct() {
     setCurrent(result.result);
   }
   else {
-    message.info("Reduced to the final.");
+    message.info("Reducted to the final.");
   }
 }
 

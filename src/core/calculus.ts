@@ -8,13 +8,38 @@ export class ReductResult {
         this.result = result;
         this.subject = subject;
     }
+
+    done(): boolean {
+        return this.subject != undefined;
+    }
 }
 
 export function reduct(term: Term): ReductResult {
+    if (term instanceof Single) {
+    }
+    else if (term instanceof Application) {
+        if(isRedex(term)){
+            let func = <Abstraction>term.left;
+            let subed = substitute(func.body, func.arg, term.right);
+            return new ReductResult(subed, term);
+        }
 
-    
-
-    return new ReductResult(term, term);
+        let left = reduct(term.left);
+        if (left.done()) {
+            return new ReductResult(new Application(left.result, term.right), left.subject);
+        }
+        let right = reduct(term.right);
+        if (right.done()) {
+            return new ReductResult(new Application(term.left, right.result), right.subject);
+        }
+    }
+    else if (term instanceof Abstraction) {
+        let body = reduct(term.body);
+        if (body.done()) {
+            return new ReductResult(new Abstraction(term.arg, body.result), body.subject);
+        }
+    }
+    return new ReductResult(term);
 }
 
 export function variables(term: Term): Set<string> {
@@ -96,10 +121,5 @@ export function substitute(term: Term, variable: string, target: Term): Term {
 }
 
 export function isRedex(term: Term): boolean {
-    if (term instanceof Application) {
-        if (term.left instanceof Abstraction) {
-            return true;
-        }
-    }
-    return false;
+    return term instanceof Application && term.left instanceof Abstraction;
 }

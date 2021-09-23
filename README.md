@@ -3,3 +3,13 @@
 ![](https://github.com/StardustDL/lamcal/workflows/CI/badge.svg) ![](https://img.shields.io/github/license/StardustDL/lamcal.svg)
 
 An online calculator for lambda calculus (λx. y).
+
+# Examples
+
+```
+(λu. λv. v)((λx. (x x))(λx. (x x)))
+-> λv. v
+
+(λx. (x x)) ((λy. y) (λz. z))
+-> λz. z
+```
