@@ -18,6 +18,9 @@ jobs:
     - name: Setup nodejs environment
       run: |
         npm install
+    - name: Generate build status
+      run: |
+        Write-Output "{ ""commit"": ""$(git rev-parse HEAD)"", ""shortCommit"": ""$(git rev-parse --short HEAD)"", ""date"": ""$(Get-date)"" }" > ./public/build.json
     - name: Build
       run: |
         npm run build

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import peggy from 'peggy'
-import { useMessage, NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NGrid, NGi, NPageHeader, NButton, NIcon, NSpace, NInput, NInputGroup, NTimeline, NTimelineItem, NButtonGroup, NStatistic } from 'naive-ui'
-import { MathFunction, ChevronRight, Check } from '@vicons/tabler'
+import { useMessage, NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NGrid, NGi, NPageHeader, NButton, NIcon, NSpace, NInput, NInputGroup, NTimeline, NTimelineItem, NButtonGroup, NStatistic, NTime } from 'naive-ui'
+import { MathFunction, ChevronRight, Check, BrandGithub, At, License, GitCommit, Clock } from '@vicons/tabler'
 import { Icon } from '@vicons/utils'
 
 import { Single, Abstraction, Application, Term, fromJson } from "../models/grammar"
@@ -26,7 +26,7 @@ const steps = ref<Step[]>([]);
 const current = ref<Term | null>(null);
 const currentFV = ref<string>("");
 
-
+const buildStatus = await (await fetch("build.json")).json();
 const grammar = await (await fetch("grammar.peggy")).text();
 const parser = peggy.generate(grammar);
 
@@ -72,7 +72,12 @@ export default {
     Icon,
     MathFunction,
     ChevronRight,
-    Check
+    Check,
+    BrandGithub,
+    At,
+    License,
+    GitCommit,
+    Clock,
   }
 }
 </script>
@@ -85,6 +90,60 @@ export default {
         <n-gi :offset="3" :span="18">
           <n-space vertical size="large">
             <n-page-header subtitle="λ 演算">
+              <template #extra>
+                <n-space>
+                  <n-button text>
+                    <template #icon>
+                    <n-icon>
+                      <icon>
+                        <at />
+                      </icon>
+                    </n-icon>
+                    </template>
+                    <a href="https://www.stardustdl.top/" style="text-decoration: none; color: inherit;">StardustDL</a>
+                  </n-button>
+                  <n-button text>
+                    <template #icon>
+                    <n-icon>
+                      <icon>
+                        <license />
+                      </icon>
+                    </n-icon>
+                    </template>
+                    <a href="https://github.com/StardustDL/lamcal/blob/master/LICENSE" style="text-decoration: none; color: inherit;">MPL-2.0</a>
+                  </n-button>
+                  <n-button text>
+                    <template #icon>
+                    <n-icon>
+                      <icon>
+                        <brand-github />
+                      </icon>
+                    </n-icon>
+                    </template>
+                    <a href="https://github.com/StardustDL/lamcal" style="text-decoration: none; color: inherit;">GitHub</a>
+                  </n-button>
+                  <n-button text>
+                    <template #icon>
+                    <n-icon>
+                      <icon>
+                        <git-commit />
+                      </icon>
+                    </n-icon>
+                    </template>
+                    <a :href="`https://github.com/StardustDL/lamcal/commit/${buildStatus.commit}`" style="text-decoration: none; color: inherit;">{{ buildStatus.shortCommit }}</a>
+                  </n-button>
+                  <n-button text>
+                    <template #icon>
+                    <n-icon>
+                      <icon>
+                        <clock />
+                      </icon>
+                    </n-icon>
+                    </template>
+                    <n-time :time="new Date(buildStatus.date)" type="relative"></n-time>
+                  </n-button>
+                </n-space>
+              </template>
               <template #avatar>
                 <n-icon>
                   <icon size="16">

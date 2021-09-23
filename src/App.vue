@@ -2,7 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import Index from './components/Index.vue';
-import { NGlobalStyle, NConfigProvider, NSpin, NBackTop, NMessageProvider } from 'naive-ui';
+import { NGlobalStyle, NConfigProvider, NSpin, NBackTop, NMessageProvider, NSpace, NImage } from 'naive-ui';
 </script>
 
 <template>

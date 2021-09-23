@@ -4,7 +4,9 @@
 
 An online calculator for lambda calculus (λx. y).
 
-# Examples
+Visit [here](http://www.stardustdl.top/lamcal/).
+
+## Examples
 
 ```
 (λu. λv. v)((λx. (x x))(λx. (x x)))
