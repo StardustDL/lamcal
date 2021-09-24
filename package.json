@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "peggy": "^1.2.0",
-    "vue": "^3.2.13"
+    "vue": "^3.2.16"
   },
   "devDependencies": {
     "@vicons/tabler": "^0.11.0",
