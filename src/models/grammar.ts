@@ -22,7 +22,7 @@ export class Abstraction {
     }
 
     toText(): string {
-        return `λ${this.arg}.${this.body.toText()}`;
+        return `(λ${this.arg}.${this.body.toText()})`;
     }
 };
 
@@ -36,7 +36,9 @@ export class Application {
     }
 
     toText(): string {
-        return `(${this.left.toText()} ${this.right.toText()})`;
+        let left = this.left.toText();
+        let right = this.right.toText();
+        return `(${left} ${right})`;
     }
 };
 

@@ -109,11 +109,10 @@ export default {
 </script>
 
 <template>
-  <n-layout>
-    <n-layout-header></n-layout-header>
-    <n-layout-content content-style="padding: 24px">
-      <n-grid :cols="24">
-        <n-gi :offset="3" :span="18">
+  <n-grid :cols="24" style="padding-top: 24px;">
+    <n-gi :offset="3" :span="18">
+      <n-layout>
+        <n-layout-header>
           <n-space vertical size="large">
             <n-page-header subtitle="λ 演算与 β 约简">
               <template #extra>
@@ -151,6 +150,10 @@ export default {
                 </n-icon>
               </n-button>
             </n-input-group>
+          </n-space>
+        </n-layout-header>
+        <n-layout-content content-style="padding: 24px">
+          <n-space>
             <n-space size="large" v-if="current">
               <n-space size="large" vertical>
                 <n-statistic label="Current" :value="current.toText()"></n-statistic>
@@ -190,9 +193,9 @@ export default {
               <Home />
             </suspense>
           </n-space>
-        </n-gi>
-      </n-grid>
-    </n-layout-content>
-  </n-layout>
+        </n-layout-content>
+      </n-layout>
+    </n-gi>
+  </n-grid>
 </template>
 

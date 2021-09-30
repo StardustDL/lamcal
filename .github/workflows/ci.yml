@@ -20,7 +20,7 @@ jobs:
         npm install
     - name: Generate build status
       run: |
-        Write-Output "{ ""commit"": ""$(git rev-parse HEAD)"", ""shortCommit"": ""$(git rev-parse --short HEAD)"", ""date"": ""$(Get-date)"" }" > ./public/build.json
+        Write-Output "{ ""commit"": ""$(git rev-parse HEAD)"", ""shortCommit"": ""$(git rev-parse --short HEAD)"", ""date"": ""$(Get-date -AsUTC -Format 'u')"" }" > ./public/build.json
     - name: Build
       run: |
         npm run build

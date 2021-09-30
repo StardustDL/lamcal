@@ -2,11 +2,13 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import Index from './components/Index.vue';
-import { NGlobalStyle, NConfigProvider, NSpin, NBackTop, NMessageProvider, NSpace, NImage } from 'naive-ui';
+import { NGlobalStyle, NConfigProvider, NSpin, NBackTop, NMessageProvider, NSpace, NImage, useOsTheme, darkTheme } from 'naive-ui'
+
+const osThemeRef = useOsTheme();
 </script>
 
 <template>
-  <n-config-provider>
+  <n-config-provider :theme="(osThemeRef == 'dark' ? darkTheme : null)">
     <n-message-provider>
       <n-global-style />
       <suspense>

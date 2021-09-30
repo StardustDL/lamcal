@@ -9,16 +9,16 @@ Visit [here](http://www.stardustdl.top/lamcal/).
 ## Examples
 
 ```
-(λu. λv. v)((λx. (x x))(λx. (x x)))
+(λu. λv. v)((λx. x x)(λx. x x))
 -> λv. v
 
-(λx. (x x)) ((λy. y) (λz. z))
+(λx. x x) ((λy. y) (λz. z))
 -> λz. z
 
-((λe. λf. e) (((λa. λb. a) x) y)) (((λc. λd. c) u) v)
+(λe. λf. e) ((λa. λb. a) x y) ((λc. λd. c) u v)
 -> x
 
-(λx. (x (λy. ((x y) y))))(λz. λw. z)
--> λw.λy.((λz.λw.z y) y)
--> λw.λy.y
+(λx. x (λy. x y y) x)(λz. λw. z)
+-> λy.((λz.λw.z) y y)
+-> λy.y
 ```

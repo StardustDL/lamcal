@@ -1,25 +1,34 @@
+{
+function buildApplicationTree(items) {
+  return items.map(item=>item[1])
+    .reduce((result, element)=>{
+      return {
+        "type": "application",
+        left: result,
+        right: element
+      }
+  });
+}
+}
+
 Term
   = s:Single { return s; }
   / "(" _ t:Term _ ")" { return t; }
   / ab:Abstraction { return ab; }
-  / ap:Application { return ap; }  
+  / ap:Application { return ap; }
 
 Abstraction
-  = "λ" _ arg:Name _ "." _ body:Term {
+  = "λ" _ arg:Name _ "." _ body:(_ Term _)+ {
   	return {
       "type": "abstraction", 
       "arg": arg,
-      "body": body
+      "body": buildApplicationTree(body)
     };
   }
 
 Application
-  = "(" _ left:Term _ right:Term _ ")" {
-  	return {
-      "type": "application", 
-      "left": left,
-      "right": right
-    };
+  = "(" terms:(_ Term _)* ")" {
+  	return buildApplicationTree(terms)
   }
 
 Single
