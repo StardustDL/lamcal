@@ -193,11 +193,3 @@ export default {
     </n-gi>
   </n-grid>
 </template>
-
-<style scoped>
-@media screen and (max-width: 960px) {
-  .status {
-    display: none;
-  }
-}
-</style>

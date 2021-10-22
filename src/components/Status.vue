@@ -4,7 +4,7 @@ import { NButton, NIcon, NSpace, NTime, NStatistic } from 'naive-ui'
 import { BrandGithub, At, License, GitCommit, Clock } from '@vicons/tabler'
 import { Icon } from '@vicons/utils'
 
-const buildStatus = await (await fetch("/build.json")).json();
+const buildStatus = await (await fetch("./build.json")).json();
 </script>
 
 <script lang="ts">
