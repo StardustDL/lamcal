@@ -27,7 +27,7 @@ class Step {
 
 const message = useMessage();
 
-const userInput = ref("((λe. λf. e) (((λa. λb. a) x) y)) (((λc. λd. c) u) v)");
+const userInput = ref("(λe. λf. e) ((λa. λb. a) x y) ((λc. λd. c) u v)");
 const steps = ref<Step[]>([]);
 const current = ref<Term | null>(null);
 const currentFV = ref<string>("");
@@ -115,11 +115,6 @@ export default {
         <n-layout-header>
           <n-space vertical size="large">
             <n-page-header subtitle="λ 演算与 β 约简">
-              <template #extra>
-                <suspense>
-                  <Status />
-                </suspense>
-              </template>
               <template #avatar>
                 <n-icon>
                   <icon size="16">
@@ -152,13 +147,13 @@ export default {
             </n-input-group>
           </n-space>
         </n-layout-header>
-        <n-layout-content content-style="padding: 24px">
+        <n-layout-content content-style="padding: 24px; width: 100%;">
           <n-space>
             <n-space size="large" v-if="current">
               <n-space size="large" vertical>
                 <n-statistic label="Current" :value="current.toText()"></n-statistic>
                 <n-statistic label="Free Variables" :value="currentFV"></n-statistic>
-                <n-button-group vertical style="width: 100%" size="large">
+                <n-button-group vertical style="width: 100%;" size="large">
                   <n-button @click="onReductInNormalOrder">
                     <template #icon>
                       <n-icon>
@@ -188,7 +183,7 @@ export default {
               </n-timeline>
             </n-space>
           </n-space>
-          <n-space size="large" v-if="!current" style="margin-top: 20px">
+          <n-space size="large" v-if="!current">
             <suspense>
               <Home />
             </suspense>
@@ -199,3 +194,10 @@ export default {
   </n-grid>
 </template>
 
+<style scoped>
+@media screen and (max-width: 960px) {
+  .status {
+    display: none;
+  }
+}
+</style>

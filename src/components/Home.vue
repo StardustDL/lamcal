@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { NH1, NH2, NCode, NResult, NImage } from 'naive-ui'
+import { NH1, NH2, NCode, NResult, NImage, NCard, NSpace } from 'naive-ui'
+import Status from './Status.vue'
 
 const examples = `(λu. λv. v)((λx. x x)(λx. x x))
 -> λv. v
@@ -17,13 +18,22 @@ const examples = `(λu. λv. v)((λx. x x)(λx. x x))
 </script>
 
 <template>
-    <n-image
-        alt="Lamcal"
-        height="300"
-        src="https://socialify.git.ci/StardustDL/lamcal/image?description=1&font=Bitter&forks=1&issues=1&language=1&owner=1&pulls=1&stargazers=1&theme=Light"
-    ></n-image>
-    <p>An online calculator for lambda calculus (λx. y).</p>
-    <n-h2>Examples</n-h2>
-    <n-code :code="examples"></n-code>
+    <n-space vertical>
+        <n-card title="Lamcal Information" hoverable embedded>
+            <suspense>
+                <Status />
+            </suspense>
+        </n-card>
+        <n-card title="Lamcal is an online calculator for lambda calculus (λx. y).">
+            <n-image
+                alt="Lamcal"
+                height="300"
+                src="https://socialify.git.ci/StardustDL/lamcal/image?description=1&font=Bitter&forks=1&issues=1&language=1&owner=1&pulls=1&stargazers=1&theme=Light"
+            ></n-image>
+        </n-card>
+        <n-card title="Examples">
+            <n-code :code="examples"></n-code>
+        </n-card>
+    </n-space>
 </template>
 
