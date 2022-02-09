@@ -16,7 +16,7 @@
     "@vitejs/plugin-vue": "^1.9.3",
     "naive-ui": "^2.19.11",
     "typescript": "^4.4.4",
-    "vite": "^2.6.10",
+    "vite": "^2.8.0",
     "vue-tsc": "^0.28.7"
   }
 }
