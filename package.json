@@ -7,7 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "peggy": "^2.0.0",
+    "peggy": "^3.0.1",
     "vue": "^3.2.36"
   },
   "devDependencies": {
